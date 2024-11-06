@@ -47,6 +47,33 @@
             console.log('Échec de l\'enregistrement du Service Worker:', error);
             });
         }
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+        // Empêche l'affichage automatique de la bannière d'installation
+        e.preventDefault();
+        deferredPrompt = e;
+
+        // Affiche un bouton d'installation dans l'interface utilisateur
+        const installButton = document.getElementById('installButton');
+        installButton.style.display = 'block';
+
+        installButton.addEventListener('click', () => {
+            // Affiche la bannière d'installation
+            deferredPrompt.prompt();
+
+            // Vérifie si l'utilisateur a accepté ou refusé l'installation
+            deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('Utilisateur a accepté l\'installation');
+            } else {
+                console.log('Utilisateur a refusé l\'installation');
+            }
+            deferredPrompt = null;
+            });
+        });
+        });
+
 
     </script>
 </body>
